@@ -650,6 +650,19 @@ void HelpComputer(edict_t *ent)
 	gi.unicast(ent, true);
 }
 
+// Add a new function to display the help screen
+void DisplayHelpScreen(edict_t* ent)
+{
+	// Your help screen layout code goes here
+	// Example: Show a simple message
+	gi.WriteByte(svc_layout);
+	gi.WriteString("xv 100 yv 100 string2 \"This is the help screen\"");
+	gi.LocBroadcast_Print(PRINT_HIGH, "Welcome, Ghost !\n\nUse Stealth and your abilities to finish the objective\n\n\nPress m to stealth | Press right mouse click to zoom\n", ent->client->pers.netname);
+	gi.unicast(ent, true);
+	ent->client->showhelp = true;
+	globals.server_flags |= SERVER_FLAG_SLOW_TIME;
+}
+
 /*
 ==================
 Cmd_Help_f
@@ -657,35 +670,33 @@ Cmd_Help_f
 Display the current help message
 ==================
 */
-void Cmd_Help_f(edict_t *ent)
+void Cmd_Help_f(edict_t* ent)
 {
-	// this is for backwards compatability
-	if (deathmatch->integer)
+	DisplayHelpScreen(ent);
+	// Check if the intermission is not active
+	if (!level.intermissiontime)
 	{
-		Cmd_Score_f(ent);
-		return;
-	}
+		// Toggle the help screen visibility
+		ent->client->showhelp = !ent->client->showhelp;
 
-	if (level.intermissiontime)
-		return;
-
-	ent->client->showinventory = false;
-	ent->client->showscores = false;
-
-	if (ent->client->showhelp &&
-			(ent->client->pers.game_help1changed == game.help1changed ||
-			ent->client->pers.game_help2changed == game.help2changed))
+		if (ent->client->showhelp)
+		{
+			// If showing help, display the help screen
+			DisplayHelpScreen(ent);
+		}
+		else
 	{
-		ent->client->showhelp = false;
+			// If hiding help, update the server flags and clear the help message time
 		globals.server_flags &= ~SERVER_FLAG_SLOW_TIME;
-		return;
+			if (level.time > ent->client->pickup_msg_time)
+			{
+				ent->client->ps.stats[STAT_PICKUP_ICON] = 0;
+				ent->client->ps.stats[STAT_PICKUP_STRING] = 0;
+			}
 	}
-
-	ent->client->showhelp = true;
-	ent->client->pers.helpchanged = 0;
-	globals.server_flags |= SERVER_FLAG_SLOW_TIME;
-	HelpComputer(ent);
+	}
 }
+
 
 //=======================================================================
 

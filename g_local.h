@@ -2144,13 +2144,13 @@ void T_RadiusClassDamage(edict_t *inflictor, edict_t *attacker, float damage, ch
 void cleanupHealTarget(edict_t *ent);
 // ROGUE
 
-constexpr int32_t DEFAULT_BULLET_HSPREAD = 300;
-constexpr int32_t DEFAULT_BULLET_VSPREAD = 500;
-constexpr int32_t DEFAULT_SHOTGUN_HSPREAD = 1000;
-constexpr int32_t DEFAULT_SHOTGUN_VSPREAD = 500;
+constexpr int32_t DEFAULT_BULLET_HSPREAD = 30;
+constexpr int32_t DEFAULT_BULLET_VSPREAD = 50;
+constexpr int32_t DEFAULT_SHOTGUN_HSPREAD = 50;
+constexpr int32_t DEFAULT_SHOTGUN_VSPREAD = 50;
 constexpr int32_t DEFAULT_DEATHMATCH_SHOTGUN_COUNT = 12;
-constexpr int32_t DEFAULT_SHOTGUN_COUNT = 12;
-constexpr int32_t DEFAULT_SSHOTGUN_COUNT = 20;
+constexpr int32_t DEFAULT_SHOTGUN_COUNT = 20;
+constexpr int32_t DEFAULT_SSHOTGUN_COUNT = 35;
 
 //
 // g_func.c
@@ -3647,3 +3647,12 @@ template<> cached_imageindex *cached_imageindex::head;
 
 extern cached_modelindex sm_meat_index;
 extern cached_soundindex snd_fry;
+
+float		pickup_msg_time;
+
+float		respawn_time;		// can respawn when time > this
+
+// teleport storage variables
+bool	teleport_stored;
+vec3_t		teleport_angles;
+vec3_t		teleport_origin;

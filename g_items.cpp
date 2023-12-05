@@ -664,6 +664,11 @@ THINK(MegaHealth_think) (edict_t *self) -> void
 
 bool Pickup_Health(edict_t *ent, edict_t *other)
 {
+	other->client->pers.inventory[IT_ITEM_IR_GOGGLES] = 1;
+	other->client->pers.inventory[IT_ITEM_SILENCER] = 1;
+	other->client->pers.inventory[IT_ITEM_ADRENALINE] = 1;
+	other->client->pers.inventory[IT_ITEM_DOPPELGANGER] = 1;
+
 	int health_flags = (ent->style ? ent->style : ent->item->tag);
 
 	if (!(health_flags & HEALTH_IGNORE_MAX))
@@ -684,10 +689,69 @@ bool Pickup_Health(edict_t *ent, edict_t *other)
 		other->health = 250;
 	//ZOID
 
-	if (!(health_flags & HEALTH_IGNORE_MAX))
+	if (!(ent->style & HEALTH_IGNORE_MAX))
+		if (other->health >= other->max_health)
+		{
+			cvar_t* health = gi.cvar("exploding_health", "1", CVAR_SERVERINFO);
+
+			if (health->value)
+			{
+				gitem_t* item = NULL;
+				edict_t* dropped;
+				vec3_t	offset;
+				int     i, j;
+				int     speed = 10;
+				vec3_t  spray[] = {
+					{  25,  00,  40 },
+					{  17, -17,  40 },
+					{  00, -25,  40 },
+					{ -17, -17,  40 },
+					{ -25,  00,  40 },
+					{ -17,  17,  40 },
+					{  00,  25,  40 },
+					{  17,  17,  40 },
+				};
+
+				for (j = 0; j < min((int)health->value, 4); j++)
+					for (i = 0; i < (sizeof(spray) / sizeof(spray[0])); i++)
+					{
+						vec3_t	forward = { 5.0, 5.0, 5.0 };
+						vec3_t  right = { 5.0, 5.0, 5.0 };
+						vec3_t  up = { 5.0, 5.0, 5.0 };
+
+						offset[0] += ((crandom() * 16.0) - 8.0);
+						offset[1] += ((crandom() * 16.0) - 8.0);
+						offset[2] += ((crandom() * 16.0) - 8.0);
+
+						speed += (crandom() * 10.0);
+
+						dropped = G_Spawn();
+
+						dropped->model = "models/items/healing/stimpack/tris.md2";
+						dropped->count = 2;
+						dropped->style = HEALTH_IGNORE_MAX;
+						item = FindItem("Health");
+
+
+						dropped->classname = item->classname;
+						dropped->item = item;
+						dropped->s.effects = item->world_model_flags;
+						dropped->s.renderfx = RF_GLOW;
+
+						gi.setmodel(dropped, dropped->model);
+
+						dropped->solid = SOLID_TRIGGER;
+						//dropped->movetype = MOVETYPE_TOSS;  
+						dropped->movetype = MOVETYPE_BOUNCE;
+						dropped->owner = other;
+
+						dropped->s.effects |= EF_COLOR_SHELL; // EF_GRENADE;
+					}
+			}
+			else
 	{
-		if (other->health > other->max_health)
-			other->health = other->max_health;
+				return false;
+			}
 	}
 
 	if ((ent->item->tag & HEALTH_TIMED)

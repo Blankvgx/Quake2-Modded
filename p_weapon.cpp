@@ -1247,7 +1247,7 @@ void weapon_grenadelauncher_fire(edict_t *ent)
 
 	P_AddWeaponKick(ent, ent->client->v_forward * -2, { -1.f, 0.f, 0.f });
 
-	fire_grenade(ent, start, dir, damage, 600, 2.5_sec, radius, (crandom_open() * 10.0f), (200 + crandom_open() * 10.0f), false);
+	fire_grenade(ent, start, dir, damage, 6000, 2.5_sec, radius, (crandom_open() * 10.0f), (200 + crandom_open() * 10.0f), false);
 
 	gi.WriteByte(svc_muzzleflash);
 	gi.WriteEntity(ent);
@@ -1292,7 +1292,7 @@ void Weapon_RocketLauncher_Fire(edict_t *ent)
 
 	vec3_t start, dir;
 	P_ProjectSource(ent, ent->client->v_angle, { 8, 8, -8 }, start, dir);
-	fire_rocket(ent, start, dir, damage, 650, damage_radius, radius_damage);
+	fire_rocket(ent, start, dir, damage, 6500, damage_radius, radius_damage);
 
 	P_AddWeaponKick(ent, ent->client->v_forward * -2, { -1.f, 0.f, 0.f });
 
@@ -1325,6 +1325,8 @@ BLASTER / HYPERBLASTER
 
 void Blaster_Fire(edict_t *ent, const vec3_t &g_offset, int damage, bool hyper, effects_t effect)
 {
+//	gi.LocBroadcast_Print(PRINT_HIGH, "Welcome, Ghost !\n\nUse Stealth and your abilities to finish the objective\n\n\nPress m to stealth | Press right mouse click to zoom\n");
+
 	if (is_quad)
 		damage *= damage_multiplier;
 
@@ -1337,7 +1339,7 @@ void Blaster_Fire(edict_t *ent, const vec3_t &g_offset, int damage, bool hyper, 
 		P_AddWeaponKick(ent, ent->client->v_forward * -2, { -1.f, 0.f, 0.f });
 
 	// let the regular blaster projectiles travel a bit faster because it is a completely useless gun
-	int speed = hyper ? 1000 : 1500;
+	int speed = hyper ? 10000 : 15000;
 
 	fire_blaster(ent, start, dir, damage, speed, effect, hyper ? MOD_HYPERBLASTER : MOD_BLASTER);
 
@@ -1459,8 +1461,8 @@ MACHINEGUN / CHAINGUN
 void Machinegun_Fire(edict_t *ent)
 {
 	int i;
-	int damage = 8;
-	int kick = 2;
+	int damage = 16;
+	int kick = 20;
 
 	if (!(ent->client->buttons & BUTTON_ATTACK))
 	{
@@ -1556,7 +1558,7 @@ void Chaingun_Fire(edict_t *ent)
 	if (deathmatch->integer)
 		damage = 6;
 	else
-		damage = 8;
+		damage = 16;
 
 	if (ent->client->ps.gunframe > 31)
 	{
@@ -1700,9 +1702,9 @@ void weapon_shotgun_fire(edict_t *ent)
 
 	G_LagCompensate(ent, start, dir);
 	if (deathmatch->integer)
-		fire_shotgun(ent, start, dir, damage, kick, 500, 500, DEFAULT_DEATHMATCH_SHOTGUN_COUNT, MOD_SHOTGUN);
+		fire_shotgun(ent, start, dir, damage, kick, 50, 50, DEFAULT_DEATHMATCH_SHOTGUN_COUNT, MOD_SHOTGUN);
 	else
-		fire_shotgun(ent, start, dir, damage, kick, 500, 500, DEFAULT_SHOTGUN_COUNT, MOD_SHOTGUN);
+		fire_shotgun(ent, start, dir, damage, kick, 50, 50, DEFAULT_SHOTGUN_COUNT, MOD_SHOTGUN);
 	G_UnLagCompensate();
 
 	// send muzzle flash
@@ -1782,29 +1784,51 @@ RAILGUN
 
 void weapon_railgun_fire(edict_t *ent)
 {
-	int damage, kick;
+	int damage
+	int kick;
 	
 	// normal damage too extreme for DM
-	if (deathmatch->integer)
-	{
+	if (deathmatch->value)
+	{	// normal damage is too extreme in dm
 		damage = 100;
 		kick = 200;
 	}
 	else
 	{
-		damage = 125;
-		kick = 225;
+		damage = 150;
+		kick = 250;
+	}
+
+	/*
+	//Will:  Added for the sonic rail, it fires when released
+	if (ent->client->buttons & BUTTON_ATTACK)
+	{
+		ent->SonicDamage += 10;
+		if (ent->SonicDamage > 250)
+		{
+			ent->SonicDamage = 250;	//This is the maximum damage of the Sonic Rail
+		}
+		if (ent->SonicDamage == 240)
+		{
+			gi.LocCenter_Print(ent, "Pew Max.\n");
+		}
+		return;
+	}
+	if (ent->SonicDamage < 70)
+	{
+		ent->SonicDamage = 70;	//This sets the minimum damage of the Sonic Rail
 	}
 
 	if (is_quad)
 	{
-		damage *= damage_multiplier;
+		ent->SonicDamage *= damage_multiplier;
 		kick *= damage_multiplier;
 	}
 
 	vec3_t start, dir;
 	P_ProjectSource(ent, ent->client->v_angle, { 0, 7, -8 }, start, dir);
 	G_LagCompensate(ent, start, dir);
+	fire_rail(ent, start, dir, ent->SonicDamage, kick);
 	fire_rail(ent, start, dir, damage, kick);
 	G_UnLagCompensate();
 
@@ -1869,7 +1893,7 @@ void weapon_bfg_fire(edict_t *ent)
 
 	vec3_t start, dir;
 	P_ProjectSource(ent, ent->client->v_angle, { 8, 8, -8 }, start, dir);
-	fire_bfg(ent, start, dir, damage, 400, damage_radius);
+	fire_bfg(ent, start, dir, damage, 5000, damage_radius);
 
 	P_AddWeaponKick(ent, ent->client->v_forward * -2, { -20.f, 0, crandom() * 8 });
 	ent->client->kick.total = DAMAGE_TIME();
@@ -1903,7 +1927,7 @@ void weapon_disint_fire(edict_t *self)
 
 	P_AddWeaponKick(self, self->client->v_forward * -2, { -1.f, 0.f, 0.f });
 
-	fire_disintegrator(self, start, dir, 800);
+	fire_disintegrator(self, start, dir, 8000);
 
 	// send muzzle flash
 	gi.WriteByte(svc_muzzleflash);
@@ -1922,4 +1946,41 @@ void Weapon_Beta_Disintegrator(edict_t *ent)
 	constexpr int fire_frames[] = { 17, 0 };
 
 	Weapon_Generic(ent, 16, 23, 46, 50, pause_frames, fire_frames, weapon_disint_fire);
+}
+
+void fire_flare(edict_t* self, vec3_t start, vec3_t aimdir, int damage, int speed, float timer, float damage_radius)
+{
+	edict_t* grenade;
+	vec3_t  dir;
+	vec3_t  forward, right, up;
+
+	vectoangles(aimdir, dir);
+	AngleVectors(dir, forward, right, up);
+
+	grenade = G_Spawn();
+	VectorCopy(start, grenade->s.origin);
+	VectorScale(aimdir, speed, grenade->velocity);
+	VectorMA(grenade->velocity, 200 + crandom() * 10.0, up, grenade->velocity);
+	VectorMA(grenade->velocity, crandom() * 10.0, right, grenade->velocity);
+	VectorSet(grenade->avelocity, 300, 300, 300);
+	grenade->movetype = MOVETYPE_BOUNCE;
+	grenade->clipmask = MASK_SHOT;
+	grenade->solid = SOLID_BBOX;
+	grenade->s.effects |= EF_BLASTER;
+	grenade->s.renderfx |= RF_SHELL_GREEN;
+	VectorClear(grenade->mins);
+	VectorClear(grenade->maxs);
+	grenade->s.modelindex = gi.modelindex("models/objects/grenade/tris.md2");
+	grenade->owner = self;
+	grenade->touch = Grenade_Touch;
+	grenade->nextthink = level.time + timer + 35;
+	grenade->think = Grenade_Explode;
+	grenade->dmg = damage;
+	grenade->dmg_radius = damage_radius;
+	grenade->classname = "grenade";
+	// CCH: a few more attributes to let the grenade 'die'
+	VectorSet(grenade->mins, -3, -3, 0);
+	VectorSet(grenade->maxs, 3, 3, 6);
+
+	gi.linkentity(grenade);
 }

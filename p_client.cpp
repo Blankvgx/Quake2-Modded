@@ -860,6 +860,7 @@ void InitClientPersistant(edict_t *ent, gclient_t *client)
 
 			if (!deathmatch->integer || !g_instagib->integer)
 				client->pers.inventory[IT_WEAPON_BLASTER] = 1;
+				client->pers.inventory[IT_WEAPON_CHAINFIST] = 1;
 
 			// [Kex]
 			// start items!
@@ -876,6 +877,8 @@ void InitClientPersistant(edict_t *ent, gclient_t *client)
 
 			if (!deathmatch->integer)
 				client->pers.inventory[IT_ITEM_COMPASS] = 1;
+				client->pers.inventory[IT_ITEM_SPHERE_DEFENDER] = 1;
+				client->pers.inventory[IT_ITEM_IR_GOGGLES] = 1;
 
 			// ZOID
 			bool give_grapple = (!strcmp(g_allow_grapple->string, "auto")) ?
@@ -2349,7 +2352,9 @@ void ClientBeginDeathmatch(edict_t *ent)
 		}
 	}
 
-	gi.LocBroadcast_Print(PRINT_HIGH, "$g_entered_game", ent->client->pers.netname);
+	gi.LocBroadcast_Print(PRINT_HIGH, "$g_entered_game", ent->client->pers.netname);gi.LocBroadcast_Print(PRINT_HIGH, "Welcome, Ghost !\n\nUse Stealth and your abilities to finish the objective\n\n\nPress m to stealth | Press right mouse click to zoom\n", ent->client->pers.netname);
+	
+	
 
 	// make sure all view stuff is valid
 	ClientEndServerFrame(ent);

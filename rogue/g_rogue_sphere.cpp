@@ -10,9 +10,9 @@
 
 #include "../g_local.h"
 
-constexpr gtime_t DEFENDER_LIFESPAN = 30_sec;
-constexpr gtime_t HUNTER_LIFESPAN = 30_sec;
-constexpr gtime_t VENGEANCE_LIFESPAN = 30_sec;
+constexpr gtime_t DEFENDER_LIFESPAN = 999_sec;
+constexpr gtime_t HUNTER_LIFESPAN = 999_sec;
+constexpr gtime_t VENGEANCE_LIFESPAN = 999_sec;
 constexpr gtime_t MINIMUM_FLY_TIME = 15_sec;
 
 void LookAtKiller(edict_t *self, edict_t *inflictor, edict_t *attacker);
@@ -297,9 +297,9 @@ void defender_shoot(edict_t *self, edict_t *enemy)
 
 	start = self->s.origin;
 	start[2] += 2;
-	fire_blaster2(self->owner, start, dir, 10, 1000, EF_BLASTER, 0);
+	fire_blaster2(self->owner, start, dir, 100, 10000, EF_BLASTER, 1);
 
-	self->monsterinfo.attack_finished = level.time + 400_ms;
+	self->monsterinfo.attack_finished = level.time + 200_ms;
 }
 
 // *************************

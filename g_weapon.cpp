@@ -384,6 +384,7 @@ void fire_blaster(edict_t *self, const vec3_t &start, const vec3_t &dir, int dam
 	edict_t *bolt;
 	trace_t	 tr;
 
+	//gi.LocCenter_Print(self, "Pew.\n");
 	bolt = G_Spawn();
 	bolt->svflags = SVF_PROJECTILE;
 	bolt->s.origin = start;

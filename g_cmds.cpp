@@ -2,6 +2,10 @@
 // Licensed under the GNU General Public License 2.0.
 #include "g_local.h"
 #include "m_player.h"
+#include <string.h>
+#pragma once
+
+int LIGHTS = 0;
 
 void SelectNextItem(edict_t *ent, item_flags_t itflags, bool menu = true)
 {
@@ -1643,75 +1647,208 @@ void ClientCommand(edict_t *ent)
 	if (level.intermissiontime)
 		return;
 	
-	if ( Q_strcasecmp( cmd, "target" ) == 0 )
-		Cmd_Target_f( ent );
-	else if ( Q_strcasecmp( cmd, "use" ) == 0 || Q_strcasecmp( cmd, "use_only" ) == 0 ||
-		Q_strcasecmp( cmd, "use_index" ) == 0 || Q_strcasecmp( cmd, "use_index_only" ) == 0 )
-		Cmd_Use_f( ent );
-	else if ( Q_strcasecmp( cmd, "drop" ) == 0 ||
-		Q_strcasecmp( cmd, "drop_index" ) == 0 )
-		Cmd_Drop_f( ent );
-	else if ( Q_strcasecmp( cmd, "give" ) == 0 )
-		Cmd_Give_f( ent );
-	else if ( Q_strcasecmp( cmd, "god" ) == 0 )
-		Cmd_God_f( ent );
+	if (Q_strcasecmp(cmd, "target") == 0)
+		Cmd_Target_f(ent);
+	else if (Q_strcasecmp(cmd, "use") == 0 || Q_strcasecmp(cmd, "use_only") == 0 ||
+		Q_strcasecmp(cmd, "use_index") == 0 || Q_strcasecmp(cmd, "use_index_only") == 0)
+		Cmd_Use_f(ent);
+	else if (Q_strcasecmp(cmd, "drop") == 0 ||
+		Q_strcasecmp(cmd, "drop_index") == 0)
+		Cmd_Drop_f(ent);
+	else if (Q_strcasecmp(cmd, "give") == 0)
+		Cmd_Give_f(ent);
+	else if (Q_strcasecmp(cmd, "god") == 0)
+		Cmd_God_f(ent);
 	else if (Q_strcasecmp(cmd, "immortal") == 0)
 		Cmd_Immortal_f(ent);
-	else if ( Q_strcasecmp( cmd, "setpoi" ) == 0 )
-		Cmd_SetPOI_f( ent );
-	else if ( Q_strcasecmp( cmd, "checkpoi" ) == 0 )
-		Cmd_CheckPOI_f( ent );
+	else if (Q_strcasecmp(cmd, "setpoi") == 0)
+		Cmd_SetPOI_f(ent);
+	else if (Q_strcasecmp(cmd, "checkpoi") == 0)
+		Cmd_CheckPOI_f(ent);
 	// Paril: cheats to help with dev
-	else if ( Q_strcasecmp( cmd, "spawn" ) == 0 )
-		Cmd_Spawn_f( ent );
-	else if ( Q_strcasecmp( cmd, "teleport" ) == 0 )
-		Cmd_Teleport_f( ent );
-	else if ( Q_strcasecmp( cmd, "notarget" ) == 0 )
-		Cmd_Notarget_f( ent );
-	else if ( Q_strcasecmp( cmd, "novisible" ) == 0 )
-		Cmd_Novisible_f( ent );
-	else if ( Q_strcasecmp( cmd, "alertall" ) == 0 )
-		Cmd_AlertAll_f( ent );
-	else if ( Q_strcasecmp( cmd, "noclip" ) == 0 )
-		Cmd_Noclip_f( ent );
-	else if ( Q_strcasecmp( cmd, "inven" ) == 0 )
-		Cmd_Inven_f( ent );
-	else if ( Q_strcasecmp( cmd, "invnext" ) == 0 )
-		SelectNextItem( ent, IF_ANY );
-	else if ( Q_strcasecmp( cmd, "invprev" ) == 0 )
-		SelectPrevItem( ent, IF_ANY );
-	else if ( Q_strcasecmp( cmd, "invnextw" ) == 0 )
-		SelectNextItem( ent, IF_WEAPON );
-	else if ( Q_strcasecmp( cmd, "invprevw" ) == 0 )
-		SelectPrevItem( ent, IF_WEAPON );
-	else if ( Q_strcasecmp( cmd, "invnextp" ) == 0 )
-		SelectNextItem( ent, IF_POWERUP );
-	else if ( Q_strcasecmp( cmd, "invprevp" ) == 0 )
-		SelectPrevItem( ent, IF_POWERUP );
-	else if ( Q_strcasecmp( cmd, "invuse" ) == 0 )
-		Cmd_InvUse_f( ent );
-	else if ( Q_strcasecmp( cmd, "invdrop" ) == 0 )
-		Cmd_InvDrop_f( ent );
-	else if ( Q_strcasecmp( cmd, "weapprev" ) == 0 )
-		Cmd_WeapPrev_f( ent );
-	else if ( Q_strcasecmp( cmd, "weapnext" ) == 0 )
-		Cmd_WeapNext_f( ent );
-	else if ( Q_strcasecmp( cmd, "weaplast" ) == 0 || Q_strcasecmp( cmd, "lastweap" ) == 0 )
-		Cmd_WeapLast_f( ent );
-	else if ( Q_strcasecmp( cmd, "kill" ) == 0 )
-		Cmd_Kill_f( ent );
-	else if ( Q_strcasecmp( cmd, "kill_ai" ) == 0 )
-		Cmd_Kill_AI_f( ent );
-	else if ( Q_strcasecmp( cmd, "where" ) == 0 )
-		Cmd_Where_f( ent );
-	else if ( Q_strcasecmp( cmd, "clear_ai_enemy" ) == 0 )
-		Cmd_Clear_AI_Enemy_f( ent );
+	else if (Q_strcasecmp(cmd, "spawn") == 0)
+		Cmd_Spawn_f(ent);
+	else if (Q_strcasecmp(cmd, "teleport") == 0)
+		Cmd_Teleport_f(ent);
+	else if (Q_strcasecmp(cmd, "notarget") == 0)
+		Cmd_Notarget_f(ent);
+	else if (Q_strcasecmp(cmd, "novisible") == 0)
+		Cmd_Novisible_f(ent);
+	else if (Q_strcasecmp(cmd, "yell") == 0)
+	{
+		gi.LocCenter_Print(ent, "Pew.\n")
+		Cmd_AlertAll_f(ent);
+	else if (Q_strcasecmp(cmd, "noclip") == 0)
+		Cmd_Noclip_f(ent);
+	else if (Q_strcasecmp(cmd, "inven") == 0)
+		Cmd_Inven_f(ent);
+	else if (Q_strcasecmp(cmd, "invnext") == 0)
+		SelectNextItem(ent, IF_ANY);
+	else if (Q_strcasecmp(cmd, "invprev") == 0)
+		SelectPrevItem(ent, IF_ANY);
+	else if (Q_strcasecmp(cmd, "invnextw") == 0)
+		SelectNextItem(ent, IF_WEAPON);
+	else if (Q_strcasecmp(cmd, "invprevw") == 0)
+		SelectPrevItem(ent, IF_WEAPON);
+	else if (Q_strcasecmp(cmd, "invnextp") == 0)
+		SelectNextItem(ent, IF_POWERUP);
+	else if (Q_strcasecmp(cmd, "invprevp") == 0)
+		SelectPrevItem(ent, IF_POWERUP);
+	else if (Q_strcasecmp(cmd, "invuse") == 0)
+		Cmd_InvUse_f(ent);
+	else if (Q_strcasecmp(cmd, "invdrop") == 0)
+		Cmd_InvDrop_f(ent);
+	else if (Q_strcasecmp(cmd, "weapprev") == 0)
+		Cmd_WeapPrev_f(ent);
+	else if (Q_strcasecmp(cmd, "weapnext") == 0)
+		Cmd_WeapNext_f(ent);
+	else if (Q_strcasecmp(cmd, "weaplast") == 0 || Q_strcasecmp(cmd, "lastweap") == 0)
+		Cmd_WeapLast_f(ent);
+	else if (Q_strcasecmp(cmd, "kill") == 0)
+		Cmd_Kill_f(ent);
+	else if (Q_strcasecmp(cmd, "kill_ai") == 0)
+		Cmd_Kill_AI_f(ent);
+	else if (Q_strcasecmp(cmd, "where") == 0)
+		Cmd_Where_f(ent);
+	else if (Q_strcasecmp(cmd, "clear_ai_enemy") == 0)
+		Cmd_Clear_AI_Enemy_f(ent);
 	else if (Q_strcasecmp(cmd, "putaway") == 0)
 		Cmd_PutAway_f(ent);
 	else if (Q_strcasecmp(cmd, "wave") == 0)
 		Cmd_Wave_f(ent);
 	else if (Q_strcasecmp(cmd, "playerlist") == 0)
 		Cmd_PlayerList_f(ent);
+	else if (Q_strcasecmp(cmd, "helpme") == 0)
+	{
+		gi.LocBroadcast_Print(PRINT_HIGH, "Welcome, Ghost !\nUse Stealth and your abilities to finish the objective\nPress m to stealth | Press right mouse click to zoom\nPress b to go into night infiltration | Use your companion to aid you in combat");
+	}
+	else if (Q_strcasecmp(cmd, "zoom") == 0)
+	{
+		int zoomtype = atoi(gi.argv(1));
+		if (zoomtype == 0)
+		{
+			ent->client->ps.fov = 90;
+		}
+		else if (zoomtype == 1)
+		{
+			if (ent->client->ps.fov == 90) ent->client->ps.fov = 40;
+			else if (ent->client->ps.fov == 40) ent->client->ps.fov = 20;
+			else if (ent->client->ps.fov == 20) ent->client->ps.fov = 10;
+			else ent->client->ps.fov = 90;
+		}
+	}
+	else if (Q_strcasecmp(cmd, "lights") == 0)
+	{
+		const char* msg;
+
+		if (!G_CheatCheck(ent))
+			return;
+
+		ent->flags ^= FL_NOVISIBLE;
+		if (!(ent->flags & FL_NOVISIBLE))
+			msg = "novisible OFF\n";
+		else
+			msg = "novisible ON\n";
+
+		gi.LocClient_Print(ent, PRINT_HIGH, msg);
+
+		if (LIGHTS)
+		{
+			// 0 normal
+			gi.configstring(CS_LIGHTS + 0, "m");
+
+			// 1 FLICKER (first variety)
+			gi.configstring(CS_LIGHTS + 1, "mmnmmommommnonmmonqnmmo");
+
+			// 2 SLOW STRONG PULSE
+			gi.configstring(CS_LIGHTS + 2, "abcdefghijklmnopqrstuvwxyzyxwvutsrqponmlkjihgfedcba");
+
+			// 3 CANDLE (first variety)
+			gi.configstring(CS_LIGHTS + 3, "mmmmmaaaaammmmmaaaaaabcdefgabcdefg");
+
+			// 4 FAST STROBE
+			gi.configstring(CS_LIGHTS + 4, "mamamamamama");
+
+			// 5 GENTLE PULSE 1
+			gi.configstring(CS_LIGHTS + 5, "jklmnopqrstuvwxyzyxwvutsrqponmlkj");
+
+			// 6 FLICKER (second variety)
+			gi.configstring(CS_LIGHTS + 6, "nmonqnmomnmomomno");
+
+			// 7 CANDLE (second variety)
+			gi.configstring(CS_LIGHTS + 7, "mmmaaaabcdefgmmmmaaaammmaamm");
+
+			// 8 CANDLE (third variety)
+			gi.configstring(CS_LIGHTS + 8, "mmmaaammmaaammmabcdefaaaammmmabcdefmmmaaaa");
+
+			// 9 SLOW STROBE (fourth variety)
+			gi.configstring(CS_LIGHTS + 9, "aaaaaaaazzzzzzzz");
+
+			// 10 FLUORESCENT FLICKER
+			gi.configstring(CS_LIGHTS + 10, "mmamammmmammamamaaamammma");
+
+			// 11 SLOW PULSE NOT FADE TO BLACK
+			gi.configstring(CS_LIGHTS + 11, "abcdefghijklmnopqrrqponmlkjihgfedcba");
+
+			// [Paril-KEX] 12 N64's 2 (fast strobe)
+			gi.configstring(CS_LIGHTS + 12, "zzazazzzzazzazazaaazazzza");
+
+			// [Paril-KEX] 13 N64's 3 (half of strong pulse)
+			gi.configstring(CS_LIGHTS + 13, "abcdefghijklmnopqrstuvwxyz");
+
+			// [Paril-KEX] 14 N64's 4 (fast strobe)
+			gi.configstring(CS_LIGHTS + 14, "abcdefghijklmnopqrstuvwxyzyxwvutsrqponmlkjihgfedcba");
+			LIGHTS = 0;
+		}
+		else
+		{
+			// 0 normal
+			gi.configstring(CS_LIGHTS + 0, "a");
+
+			// 1 FLICKER (first variety)
+			gi.configstring(CS_LIGHTS + 1, "a");
+
+			// 2 SLOW STRONG PULSE
+			gi.configstring(CS_LIGHTS + 2, "a");
+
+			// 3 CANDLE (first variety)
+			gi.configstring(CS_LIGHTS + 3, "a");
+
+			// 4 FAST STROBE
+			gi.configstring(CS_LIGHTS + 4, "a");
+
+			// 5 GENTLE PULSE 1
+			gi.configstring(CS_LIGHTS + 5, "a");
+
+			// 6 FLICKER (second variety)
+			gi.configstring(CS_LIGHTS + 6, "a");
+
+			// 7 CANDLE (second variety)
+			gi.configstring(CS_LIGHTS + 7, "a");
+
+			// 8 CANDLE (third variety)
+			gi.configstring(CS_LIGHTS + 8, "a");
+
+			// 9 SLOW STROBE (fourth variety)
+			gi.configstring(CS_LIGHTS + 9, "a");
+
+			// 10 FLUORESCENT FLICKER
+			gi.configstring(CS_LIGHTS + 10, "a");
+
+			// 11 SLOW PULSE NOT FADE TO BLACK
+			gi.configstring(CS_LIGHTS + 11, "a");
+
+			// [Paril-KEX] 12 N64's 2 (fast strobe)
+			gi.configstring(CS_LIGHTS + 12, "a");
+
+			// [Paril-KEX] 13 N64's 3 (half of strong pulse)
+			gi.configstring(CS_LIGHTS + 13, "a");
+
+			// [Paril-KEX] 14 N64's 4 (fast strobe)
+			gi.configstring(CS_LIGHTS + 14, "a");
+			LIGHTS = 1;
+		}
+	}
 	// ZOID
 	else if (Q_strcasecmp(cmd, "team") == 0)
 		CTFTeam_f(ent);
