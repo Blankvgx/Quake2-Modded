@@ -19,6 +19,8 @@ Following prerequisites must be  installed:
 
 - A working copy of Quake 2 installed on your system.
 - Have the Rerelease copy of the Quake2 Source Code, Available by idsoftware.
+  - https://github.com/id-Software/quake2-rerelease-dll
+  - Make sure to install dependancies and features
 - Storage / Space
 
 ### Installation
