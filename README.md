@@ -1,4 +1,4 @@
-# Game-Mod-Q4-MarkCedrickVillanueva
+# Game-Mod-Q2-MarkCedrickVillanueva
 
 Quake2 Modded with Sniper and Stealth Features
 
